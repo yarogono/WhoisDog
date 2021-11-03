@@ -146,7 +146,7 @@
 
  </style>
 <div class="wrapper">
-  <form action="#" class="card-content" method="post">
+  <form action="#" class="card-content" method="post" enctype="multipart/form-data">
       <div class="home">
       <i class="fas fa-home"><a href = "" target = "" id="home-name">Home</a></i>
       </div>
@@ -195,7 +195,7 @@ $("#file").on('change',function(){
     if (name.value==""){
         let name = $('#name').val();
         alert("이름을 입력해 주세요.");
-        return;
+        return flase;
     }
 
 
