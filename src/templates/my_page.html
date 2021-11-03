@@ -146,7 +146,7 @@
 
  </style>
 <div class="wrapper">
-  <form action="#" class="card-content" method="post" enctype="multipart/form-data">
+  <form action="" class="card-content" method="post" enctype="multipart/form-data">
       <div class="home">
       <i class="fas fa-home"><a href = "" target = "" id="home-name">Home</a></i>
       </div>
@@ -166,7 +166,7 @@
     <div class="form-input">
         <input type="text" class="name" placeholder="이름" id="name" maxlength="5">
         <input type="number" class="age" placeholder="나이" id="age">
-        <input type="text" class="breed" placeholder="견종" id="breed" maxlength="10">
+        <input type="text" class="breed" placeholder="견종" id="breed" maxlength="15">
         <input type="text" class="intro" placeholder="소개" id="intro" maxlength="30">
         <div> <input type="submit" class="save-btn" onclick="upload()" value="등록"></div>
     </div>
@@ -174,17 +174,38 @@
 </div>
 
 <script>
+<!--   한글, 영어만 작성 가능-->
+    $("#name, #breed, ").keyup(function(event){
 
-$("#file").on('change',function(){
-  var fileName = $("#file").val();
-  $(".upload-name").val(fileName);
-});
+        if (!(event.keyCode >=37 && event.keyCode<=40)) {
+
+            var inputVal = $(this).val();
+
+            inputVal = inputVal.replace(/[^(가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z)]/gi,'').replace(/[()]/g,'');
+
+            $(this).val(inputVal);
+
+        }
+
+    }).blur(function(){
+
+    if( $(this).val() != null && $(this).val() != '' ) {
+
+    $(this).val( $(this).val().replace(/[^(가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z)]/gi, '').replace(/[()]/g,'') );
+
+    }
+
+    });
+
+    <!--파일업로드-->
+    $("#file").on('change',function(){
+     var fileName = $("#file").val();
+    $(".upload-name").val(fileName);
+    });
 
 
-
+  <!--이미지 파일만 불러오게-->
     function upload() {
-
-    <!--이미지 파일만 불러오게-->
     if (file.value==""){
         let file=$('#file').val();
         alert("img파일을 업로드해 주세요.");
