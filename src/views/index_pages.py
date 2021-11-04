@@ -1,95 +1,80 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for
+from pymongo import MongoClient
+import jwt
 
 index_pages = Blueprint('index_pages', __name__)
 
-from pymongo import MongoClient
 client = MongoClient('localhost', 27017)
 db = client.dbsparta
 
+SECRET_KEY = ''
+
+# r = requests.get('')
+# response = r.json()
+# pet_board = response['pet_board']
+
 @index_pages.route("/")
 def index():
-    return render_template("index.html")
-
-# # pet - POST
-# @index_pages.route('/posting', method=['POST'])
-# def pet_upload():
-#     image = request.form['image']
-#     pet_name = request.form['pet_name']
-#     pet_age = request.form['pet_age']
-#     pet_species = request.form['pet_species']
-#     pet_intro = request.form['pet_intro']
-#
-#     doc = {
-#         'image': image,
-#         'pet_name': pet_name,
-#         'pet_age': pet_age,
-#         'pet_species': pet_species,
-#         'pet_intro': pet_intro
-#     }
-#
-#     db.collection.insert_one(doc)
-#
-#     return jsonify({'msg': '완료되었어요! 얼른 확인하러 가볼까요?'})
+    cards = list(db.pet_board.find({}).sort([('upload_date', -1), ('_id', -1)]))
+    return render_template("index.html", cards=cards)
 
 # attach card - GET
-# @index_pages.route('/post', methods=['GET'])
-# def post_card():
-#     pet_info = list(db.pet_board.fine({}, {'_id': False}).sort('upload_date', -1))
-#     return jsonify({'card_info': pet_info})
-
-# sort by date - GET
-@index_pages.route('/sort/date', methods=['GET'])
-def sort_by_date ():
-    card_info = list(db.pet_board.fine({}, {'_id': False}).sort('upload_date', -1))
-    return jsonify({'card_info': card_info})
-
-# sort by like - GET
-@index_pages.route('/sort/like', methods=['GET'])
-def sort_by_like ():
-    card_info = list(db.pet_board.fine({}, {'_id': False}).sort('like_counts', -1))
-    return jsonify({'card_info': card_info})
+@index_pages.route("/api/get_cards", methods=['GET'])
+def get_cards():
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        user_name = payload["id"]
+        user_name_receive = request.args.get("user_name_give")
+        if user_name_receive == "":
+            cards = list(db.pet_board.find({}).sort([('upload_date', -1), ('_id', -1)]))
+        else:
+            cards = list(db.pet_board.find({'user_name': user_name_receive}).sort([('upload_date', -1), ('_id', -1)]))
+        for card in cards:
+            card["_id"] = str(card["_id"])
+            card["like_by_me"] = bool(db.pet_board.find_one({"_id": card["_id"], "type": "like", "user_name": user_name}))
+        return jsonify({"result": "success", "msg": "포스팅을 가져왔습니다.", "cards": cards})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("main"))
 
 # like - POST
-@index_pages.route('/like', methods=['POST'])
-def like_click():
-    index_receive = request.form['index_give']
-    like_users_receive = request.form['like_users_give']
+@index_pages.route('/api/like', methods=['POST'])
+class Likes():
+    def like_click():
+        token_receive = request.cookies.get('')
+        try:
+            payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+            user_info = db.user.fine_one({'user_name': payload['id']})
 
-    target_index = db.pet_board.find_one({'index': index_receive})
-    curren_like = target_index['like_count']
-    new_like = curren_like + 1
+            post_id_receive = request.form['post_id_give']
+            action_receive = request.form['action_give']
 
-    doc = {
-        'index': index_receive,
-        'like_count': new_like,
-        'like_users': like_users_receive
-    }
+            target_id = db.pet_board.find_one({'_id': post_id_receive})
+            curren_like = target_id['like_count']
 
-    db.pet_board.insert_one(doc)
+            if action_receive == 'like':
+                new_like = curren_like + 1
+                db.pet_board.update_one({'_id': post_id_receive}, {'$set': {'like_count': new_like}})
+            else:
+                new_like = curren_like - 1
+                db.pet_board.update_one({'_id': post_id_receive}, {'$set': {'like_count': new_like}})
+            return jsonify({"result": "success", 'msg': 'updated'}, )
+        except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+            return redirect(url_for("main"))
+    def like(self):
+        datas = Likes.get_all()
+        return jsonify(datas)
 
-    return jsonify({'msg': '좋아요 완료! 얼른 확인하러 가볼까요?'})
+# sort by date - GET
+@index_pages.route('/api/sort/date', methods=['GET'])
+def sort_by_date():
+    cards = list(db.pet_board.fine({}).sort([('upload_date', -1), ('_id', -1)]))
+    return jsonify({'cards': cards})
 
-# like cancel - POST
-@index_pages.route('/cancel', methods=['POST'])
-def like_cancel():
-    user_name_receive = request.form['user_name_give']
-    like_users_receive = request.form['like_users_give']
+# sort by like - GET
+@index_pages.route('/api/sort/like', methods=['GET'])
+def sort_by_like():
+    cards = list(db.pet_board.fine({}, {'_id': False}).sort([('like_count', -1), ('_id', -1)]))
+    return jsonify({'cards': cards})
 
-    target_user = db.pet_board.find_one({'user_name': user_name_receive})
-    curren_like = target_user['like_count']
-    new_like = curren_like - 1
-
-    doc = {
-        'user_name': user_name_receive,
-        'like_count': new_like,
-        'like_users': like_users_receive
-    }
-
-    db.pet_board.insert_one(doc)
-
-    return jsonify({'msg': '좋아요 취소 완료!'})
-
-# # # like_count - GET
-# # @index_pages.route('/like', method=['GET'])
-# # def like_print
 
