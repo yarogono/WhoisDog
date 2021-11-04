@@ -144,7 +144,7 @@
 
  </style>
 <div class="wrapper">
-  <form action="" class="card-content" method="post" enctype="multipart/form-data">
+  <form action="" class="card-content" method="post" enctype="multipart/form-data" onSubmit="return false">
       <div class="home">
       <i class="fas fa-home"><a href = "" target = "" id="home-name">Home</a></i>
       </div>
@@ -186,13 +186,15 @@ function upload(){
      if (uploadInput.value==""){
         let file = $('#uploadInput').val();
         alert("img파일을 업로드해 주세요.");
-        return;
+        uploadInput.focus()
+        return false;
     }
 
     if (name.value==""){
         let name = $('#name').val();
         alert("이름을 입력해 주세요.");
-        return;
+        name.focus()
+        return false;
     }
 
 
@@ -200,21 +202,24 @@ function upload(){
     if (age.value==""){
         let age=$('#age').val();
         alert("나이를 입력해 주세요.");
-        return;
+        age.focus()
+        return false;
         }
 
 
     if (breed.value==""){
         let bleed=$('#breed').val();
         alert("견종을 입력해 주세요.");
-        return;
+        breed.focus()
+        return false;
         }
 
 
     if (intro.value==""){
         let intro=$('#intro').val();
         alert("소개글을 작성해 주세요.");
-        return;
+        intro.focus()
+        return false;
         }
      else{
      alert("등록완료");
@@ -225,4 +230,3 @@ function upload(){
 
 
 {% endblock %}
-
