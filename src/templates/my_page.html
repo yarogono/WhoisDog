@@ -144,21 +144,29 @@
 
  </style>
 <div class="wrapper">
-  <form action="" class="card-content" method="post" enctype="multipart/form-data" onSubmit="return false">
-      <div class="home">
-      <i class="fas fa-home"><a href = "" target = "" id="home-name">Home</a></i>
-      </div>
-    <div class="container">
-      <div class="image">
-       <i class="fas fa-paw"></i>
-      </div>
-    <h1><span class="nu">누</span><span class="nu">구</span><span class="nu">개</span><span class="nu"></span></h1>
-      <h5 class="mini-text">"우리집 귀여운 댕댕이를 자랑해 주세요." </h5>
-    </div>
-      <div class="file-box">
-      <input type="file" id="uploadInput" accept="image/*" name="uploadInput" onchange="javascript:getRealPath(this);" />
 
-      <input type="hidden" id="real_path" name="real_path" value="" />
+  <form action="" class="card-content" method="post" enctype="multipart/form-data" onSubmit="return false">
+
+      <div class="home">
+      <i class="fas fa-home"><a href = "../index.html" target = "" id="home-name">Home</a></i>
+      </div>
+      <div class="container">
+          <div class="image">
+          <i class="fas fa-paw"></i>
+          </div>
+         <h1>
+        <span class="nu">누</span>
+        <span class="nu">구</span>
+        <span class="nu">개</span>
+        <span class="nu"></span>
+         </h1>
+         <h5 class="mini-text">"우리집 귀여운 댕댕이를 자랑해 주세요." </h5>
+      </div>
+
+      <div class="file-box">
+         <input type="file" id="uploadInput" accept="image/*" name="uploadInput" onchange="javascript:getRealPath(this);" />
+
+         <input type="hidden" id="real_path" name="real_path" value="" />
 
       </div>
 
@@ -178,9 +186,6 @@ function getRealPath(obj){
   document.upimage.real_path.value = document.selection.createRangeCollection()[0].text.toString();
 
 }
-
-
-
 
 function upload(){
      if (uploadInput.value==""){
@@ -215,6 +220,7 @@ function upload(){
         }
 
 
+
     if (intro.value==""){
         let intro=$('#intro').val();
         alert("소개글을 작성해 주세요.");
@@ -225,6 +231,8 @@ function upload(){
      alert("등록완료");
      }
  }
+
+
 </script>
 
 
