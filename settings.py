@@ -1,6 +1,8 @@
 from os import getenv
 from dotenv import load_dotenv
 
+# 소스코드 작성자 => 임전혁
+
 load_dotenv()
 
 DB_URL = getenv("DB_URL")
