@@ -1,9 +1,16 @@
+
+//작성자 박승빈
+//input태그의 file 사용시 fakepath 해결방법:
+//input 태그에 onchange() 이벤트를 실행시킵니다.
+
 function getRealPath(obj){
   obj.select();
   document.upimage.real_path.value = document.selection.createRangeCollection()[0].text.toString();
 
 }
 
+//작성자 박승빈
+//submit 버튼을 눌려도 데이터가 전송되지 않게 리턴 false를 해준다.
 function upload(){
      if (uploadInput.value==""){
         let file = $('#uploadInput').val();

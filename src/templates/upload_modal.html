@@ -1,10 +1,15 @@
 {% extends "index.html"  %}
 {% block content %}
 <div class="wrapper">
+
+<!--작성자:박승빈-->
+<!--사용자가 입력한 내용을 정보를 form method post를 통해 서버쪽을로 전송한다.-->
+<!--파일을 업로드 할때 <form>태그에서 ENCTYPE="multipart/form-data"라는 애트리뷰트를 반드시 써야 한다.-->
+<!--그렇게 하지 않으면 웹 서버로 데이터를 넘길때 파일의 경로명만 전송되고 파일 내용이 전송되지 않는다.-->
+
+
     <form action="/mypage/" class="card-content" method="post" onsubmit="return upload()" enctype="multipart/form-data">
-<!--        <div class="home">-->
-<!--            <i class="fas fa-home"><a href = "../index.html" target = "" id="home-name">Home</a></i>-->
-<!--        </div>-->
+
         <div class="container">
             <div class="image">
                 <i class="fas fa-paw"></i>
@@ -32,7 +37,7 @@
             <input name="pet_intro" type="text" class="intro" placeholder="소개" id="intro" maxlength="30">
             <div>
                 <input type="submit" class="save-btn" value="등록">
-                <!-- 취소버튼추가 -->
+
                 <input type="button" class='modal-close' value="취소">
             </div>
         </div>
