@@ -1,10 +1,10 @@
+// onload 되면 자동으로 카드가 붙고, 로그인 상태 확인해서 냇바 버튼이 변경되도록 설정
 $(document).ready(function () {
     get_cards();
     checkCookie();
 })
 
-
-
+// 업로드 데이터 불러와서 화면에 카드 붙이기 / ajax에서 jinja2 템플릿 엔진으로 수정함
 function get_cards() {
     // $("#card-box").empty()
     $.ajax({
@@ -13,6 +13,7 @@ function get_cards() {
         data: {},
         success: function (response) {
             if (response["result"] == "success") {
+                // 업로드 데이터를 가져와서 템플릿 양식에 맞춰 데이터 수만큼 카드가 생성되도록 함 > 구현 실패로 jinja2 템플릿 엔진 사용으로 변경
                 let cards = response["cards"]
                 for (let i = 0; i < cards.length; i++) {
                     let card = cards[i]
@@ -50,44 +51,17 @@ function get_cards() {
     })
 }
 
-function time2str(date) {
-    let today = new Date()
-    let time = (today - date) / 1000 / 60
-
-    if (time < 60) {
-        return parseInt(time) + "분 전"
-    }
-    time = time / 60
-    if (time < 24) {
-        return parseInt(time) + "시간 전"
-    }
-    time = time / 24
-    if (time < 7) {
-        return parseInt(time) + "일 전"
-    }
-    return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`
-}
-
-function num2str(count) {
-    if (count > 10000) {
-        return parseInt(count / 1000) + "k"
-    }
-    if (count > 500) {
-        return parseInt(count / 100) / 10 + "k"
-    }
-    if (count == 0) {
-        return ""
-    }
-    return count
-}
-
+// (구현 못 함) 좋아요 클릭 이벤트 함수
 function likeClick(_id, type) {
     console.log(_id, type)
+    // 좋아요를 클릭한 게시물의 고유 식별 id와 타입 변수 설정
     let $a_like = $(`#${_id} button[aria-label='${type}']`)
     let $i_like = $a_like.find("i")
+    // 현재 좋아요 아이콘의 상태
     let class_s = {"like": "far fa-heart"}
     let class_o = {"like": "fas fa-heart"}
 
+    // 현재 좋아요 아이콘이 비어 있는 하트일 때 클릭하는 경우 > 좋아요
     if ($i_like.hasClass(class_s[type])) {
         $.ajax({
             type: "POST",
@@ -97,13 +71,16 @@ function likeClick(_id, type) {
                 type_give: type,
                 action_give: "like"
             },
+            // 좋아요를 클릭하면 빈 하트 아이콘을 없애고 꽉 차 있는 아이콘으로 변경하고 페이지 리로드
             success: function (response) {
                 console.log("like")
                 $i_like.addClass(class_o[type]).removeClass(class_s[type])
                 window.location.reload()
             }
         })
-    } else {
+    }
+    // 현재 좋아요 아이콘이 꽉 차 있는 하트일 때 클릭하는 경우 > 좋아요 취소
+    else {
         $.ajax({
             type: "POST",
             url: "/api/like",
@@ -112,6 +89,7 @@ function likeClick(_id, type) {
                 type_give: type,
                 action_give: "dislike"
             },
+            // 좋아요를 취소하면 꽉 차 있는 아이콘에서 빈 하트 아이콘으로 변경하고 페이지 리로드
             success: function (response) {
                 console.log("unlike")
                 $i_like.addClass(class_s[type]).removeClass(class_o[type])
@@ -121,6 +99,7 @@ function likeClick(_id, type) {
     }
 }
 
+// (구현 못 함) 정렬에서 최신순을 클릭하면 업로드 날짜순으로 데이터를 가져 와서 카드 재생성
 function sortByDate() {
     // $("#card-box").empty()
     $.ajax({
@@ -167,6 +146,7 @@ function sortByDate() {
     });
 }
 
+// (구현 못 함) 정렬에서 좋아요순을 클릭하면 좋아요 갯수 순으로 데이터를 가져 와서 카드 재생성
 function sortByLike() {
     // $("#card-box").empty()
     $.ajax({
@@ -218,47 +198,17 @@ const modal = document.querySelector('#modal');
 const btnPost = document.querySelector('.btn-post');
 const btnModalClose = document.querySelector('.modal-close')
 
+// 업로드를 클릭하면 모달 페이지가 보이고, 메인 페이지는 스크롤이 안 되도록 설정
 btnPost.addEventListener('click', () => {
     modal.style.display = 'block';
     body.style.overflow = 'hidden';
 });
 
+// 모달 업로드 페이지에서 홈 버튼을 클릭하면 모달 페이지는 안 보이고, 메인 페이지는 스크롤이 다시 되도록 설정
 btnModalClose.addEventListener('click', () => {
     modal.style.display = 'none';
     body.style.overflow = 'auto';
 });
-
-// Scroll
-let didScroll;
-let lastScrollTop = 0;
-let delta = 5;
-let navBarHeight = $('.header').outerHeight();
-
-$(window).scroll(function (event) {
-    didScroll = true;
-});
-
-setInterval(function () {
-    if (didScroll) {
-        hasScrolled();
-        didScroll = false;
-    }
-}, 250);
-
-function hasScrolled() {
-    let status = $(this).scrollTop();
-    if (Math.abs(lastScrollTop - status) <= delta)
-        return;
-
-    if (status > lastScrollTop && status > navBarHeight) {
-        $('.header').removeClass('nav-down').addClass('nav-up');
-    } else {
-        if (status + $(window).height() < $(document).height()) {
-            $('header').removeClass('nav-up').addClass('nav-down');
-        }
-    }
-    lastScrollTop = status;
-}
 
 // const getCookieValue = (key) => {
 //     let cookieKey = key + "=";
@@ -278,19 +228,24 @@ function hasScrolled() {
 //     return result;
 // }
 
+// 로그인/로그아웃 여부에 따라 냇바의 로그인 관련 버튼이 변경되도록 설정
 function checkCookie() {
+    // 페이지의 쿠키 가져오기
     let cookieArr = document.cookie.split(";");
     try {
         for (let i = 0; i < cookieArr.length; i++) {
-        let logIn = cookieArr[i].match('mytoken')
+            // 만약 쿠키 리스트에 로그인을 한 경우에만 나타나는 mytoken 문자가 있으면 로그인 상태로 설정
+            let logIn = cookieArr[i].match('mytoken')
             if (logIn) { // 로그인 상태 //
+                // 회원가입 버튼이 보이지 않도록 설정
                 document.querySelector(".btn-join").style.visibility = "hidden";
-
+                // 로그인 버튼이 로그아웃 버튼으로 변경되고 로그아웃 버튼을 클릭하면 메인페이지로 이동하도록 설정
                 let loginBtn = document.querySelector(".btn-login")
                 loginBtn.innerHTML = "LOGOUT";
                 loginBtn.addEventListener("click", logOut);
-
-            } else {
+            }
+        // 로그아웃 상태이면 do nothing 으로 설정
+        else {
                 return;
             }
         }
@@ -299,7 +254,10 @@ function checkCookie() {
     }
 }
 
+// 로그아웃 클릭 시 발생하는 이벤트
 function logOut() {
+    // mytoken 이라는 쿠키가 만료되도록 설정
     document.cookie = "mytoken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    // 메인 페이지로 이동되도록 설정
     window.location.href = "/"
 }
