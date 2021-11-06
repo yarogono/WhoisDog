@@ -1,10 +1,14 @@
+
+
+// 코드 작성자 => 임전혁
+
 // Input tag
 const USER_PW = document.getElementById('pw');
 const USER_PW2 = document.getElementById('pw2');
 const EMAIL = document.getElementById('email')
 const NICKNAME = document.getElementById('nickname')
 
-// Check span tag
+// 아이디, 비밀번호, 이메일, 닉네임 체크 후 상태를 출력하는 Span 태그
 const EMAIL_CHECK = document.getElementById('email_check');
 const PW_CHECK = document.getElementById('pw_check');
 const PW2_CHECK = document.getElementById('pw2_check');
@@ -16,7 +20,7 @@ const REGEX_EMAIL = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA
 
 
 
-
+// 설정해 놓은 Regex로 아이디, 패스워드, 이메일 유효성 검사
 function check(regex, tag, message) {
     if(regex.test(tag.value)) {
         return true;
@@ -26,7 +30,10 @@ function check(regex, tag, message) {
     tag.focus();
 }
 
-
+// 회원가입 form에서 submit을 누르면 chekForm() 함수 실해
+// 비밀번호와 비밀번호 확인 input 유효성 검사
+// Regex를 활용해 비밀번호 유효성 감사( 8 ~ 15자리 특수문자, 문자, 숫자가 포함된 비밀번호)
+// Regex를 활용해 이메일 유효성 검사
 function checkForm() {
 
     if(USER_PW.value != USER_PW2.value) {
@@ -48,6 +55,7 @@ function checkForm() {
     }
 }
 
+// 패스워드 Regex를 사용해 유효성 검사
 function pwdRegexCheck() {
 
     if(REGEX_PWD.test(USER_PW.value)) {
@@ -74,7 +82,9 @@ function pwdEqualCheck() {
     }
 }
 
+// 이메일 중복 검사
 function emailDuplicateCheck() {
+    // 유저가 입력한 email input value를 Ajax 콜을 통해 서버로 전송
     $.ajax({
         type: "POST",
         url: "/join/email/check_dup",
@@ -82,11 +92,13 @@ function emailDuplicateCheck() {
             email_give: $(this).val()
         },
         success: function (response) {
+            // 서버에 전송한 이메일을 통해 중복여부 확인 후 True False형식으로 받음 => response["exists"]
             if (response["exists"]) {
                 EMAIL_CHECK.innerHTML = "이미 존재하는 아이디입니다.";
                 EMAIL_CHECK.style.color = "red";
                 EMAIL.focus();
             } else {
+                // 중복되지 않은 아이디값을 Regex를 활용해 이메일 형식 체크
                 if (REGEX_EMAIL.test(EMAIL.value)) {
                     EMAIL_CHECK.innerHTML = "사용할 수 있는 아이디입니다.";
                     EMAIL_CHECK.style.color = "blue";
@@ -99,6 +111,7 @@ function emailDuplicateCheck() {
     });
 }
 
+// 닉네임 중복 검사
 function nickDuplicateCheck() {
   $.ajax({
         type: "POST",
@@ -119,7 +132,7 @@ function nickDuplicateCheck() {
     });
 }
 
-
+// 회원기입 페이지 불러오면 init() 함수가 실행되고 init() 함수 안에 있는 이벤트를 실행
 function init() {
     $("#pw").on("propertychange change keyup paste input", pwdRegexCheck);
     $("#pw2").on("propertychange change keyup paste input", pwdEqualCheck);

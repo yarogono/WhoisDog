@@ -6,7 +6,7 @@ Ajax , jwt 토큰을 이용해 로그인 기능과 회원가입기능을 구현�
 
 <a href="https://whoisdog.herokuapp.com/">누구개?(부제:WhoisDog) 링크로 가기</a> <br/>
 
-![썸네일](https://user-images.githubusercontent.com/70641418/127768727-74e0a62f-9d35-4e1f-89a1-3bb7fb8b2084.JPG)
+![thumbnail](https://user-images.githubusercontent.com/92071754/140544501-74fbc3ac-0217-4e2c-a9b8-cb394adb4101.png)
 
 
 <br/>
@@ -28,6 +28,20 @@ Ajax , jwt 토큰을 이용해 로그인 기능과 회원가입기능을 구현�
   
 - Front-end: HTML, CSS, JavaScript, Jquery, Flask, Jinja2, ajax
 - Back-end: Python, Flask, Jinja2, MogoDB , jwt, S3, MondoDB Cloud, Heroku(PaaS)
+
+<br/>
+
+
+## DB 설계
+
+<img src="https://user-images.githubusercontent.com/70641418/140592016-52c12be5-aead-4f29-81dd-6061a7388ab8.JPG" style="width: 500px;">
+
+<br/>
+
+
+## API 설계
+
+<img src="https://user-images.githubusercontent.com/70641418/140592117-db48abe5-3f7d-45f0-bf66-f1583b678f46.png" style="width: 500px;">
 
 <br/>
 
