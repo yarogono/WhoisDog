@@ -14,7 +14,7 @@ import datetime
 login_pages = Blueprint('login_pages', __name__, url_prefix="/login")
 
 # 로그인페이지를 들어올때 토큰이 있을때 이미
-# 로그인 한 유저로 판단하여 메인 페이지로 redirect
+# 로그인 한 유저로 판단하여 메인 페이지로 redirect//
 @login_pages.before_request
 def login_check():
     if request.cookies.get('mytoken') is not None:
