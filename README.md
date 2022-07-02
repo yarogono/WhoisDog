@@ -4,8 +4,6 @@ Ajax , jwt 토큰을 이용해 로그인 기능과 회원가입기능을 구현�
 추가적으로 업로드 모달 페이지와 좋아요/최신순 정렬이 가능하게 구현하였습니다 .
 
 
-<a href="https://whoisdog.herokuapp.com/">누구개?(부제:WhoisDog) 링크로 가기</a> <br/>
-
 ![thumbnail](https://user-images.githubusercontent.com/92071754/140544501-74fbc3ac-0217-4e2c-a9b8-cb394adb4101.png)
 
 
